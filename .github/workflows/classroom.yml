@@ -1,0 +1,73 @@
+name: Autograding Tests
+'on':
+- push
+- repository_dispatch
+permissions:
+  checks: write
+  actions: read
+  contents: read
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: P1
+      id: p1
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: P1
+        setup-command: ''
+        command: python3 Examen2.py
+        input: '1'
+        expected-output: "['HTML', 'CSS', 'JS', 'React', 'Redux', 'Node', 'Express',
+          'MongoDB']"
+        comparison-method: contains
+        timeout: 1
+        max-score: 25
+    - name: P2
+      id: p2
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: P2
+        setup-command: ''
+        command: python3 Examen2.py
+        input: '2'
+        expected-output: "{19, 20, 22, 24, 25, 26, 27, 28}"
+        comparison-method: contains
+        timeout: 10
+        max-score: 25
+    - name: P3
+      id: p3
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: P3
+        setup-command: ''
+        command: python3 Examen2.py
+        input: '3'
+        expected-output: '2500'
+        comparison-method: contains
+        timeout: 1
+        max-score: 25
+    - name: P4
+      id: p4
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: P4
+        setup-command: ''
+        command: python3 Examen2.py
+        input: '4'
+        expected-output: '77.0'
+        comparison-method: contains
+        timeout: 1
+        max-score: 25
+    - name: Autograding Reporter
+      uses: classroom-resources/autograding-grading-reporter@v1
+      env:
+        P1_RESULTS: "${{steps.p1.outputs.result}}"
+        P2_RESULTS: "${{steps.p2.outputs.result}}"
+        P3_RESULTS: "${{steps.p3.outputs.result}}"
+        P4_RESULTS: "${{steps.p4.outputs.result}}"
+      with:
+        runners: p1,p2,p3,p4
